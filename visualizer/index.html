@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Arachne 3D</title>
+  <style>
+    body { margin: 0; background: black; overflow: hidden; }
+  </style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+camera.position.z = 20;
+
+// cargar datos
+fetch("../output/arachne.json")
+.then(res => res.json())
+.then(data => {
+
+    const geometry = new THREE.SphereGeometry(0.15, 8, 8);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ffcc });
+
+    data.forEach(c => {
+        const sphere = new THREE.Mesh(geometry, material);
+        sphere.position.set(c.x, c.y, c.z);
+        scene.add(sphere);
+    });
+
+    animate();
+});
+
+function animate() {
+    requestAnimationFrame(animate);
+    scene.rotation.y += 0.002;
+    renderer.render(scene, camera);
+}
+</script>
+
+</body>
+</html>
